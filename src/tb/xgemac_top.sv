@@ -7,11 +7,12 @@
 `include "pkt_interface.sv"
 `include "design_pkg_old.sv"
 `include "xgemac_pkg.sv"
-
-
+ import uvm_pkg::*;
+ `include "uvm_macros.svh"
+ 
 module xgemac_top;
-
-   bit wb_clk_i,clk_156m25, reset_156m25_n, wb_rst_i;
+  import xgemac_pkg::*;
+   bit wb_clk_i,clk_156m25;
  
 always #1200 clk_156m25 = ~clk_156m25; // frequency 156.25MHz
 always #5000 wb_clk_i = ~wb_clk_i; // We have considered the Wishbone clock frequency as 100MHz
@@ -23,9 +24,9 @@ always #5000 wb_clk_i = ~wb_clk_i; // We have considered the Wishbone clock freq
     wb_clk_i = 0;
    
   end
-  wish_intf wish_vif(wb_clk_i, wb_rst_i);  
+  wish_intf wish_vif(wb_clk_i);  
                                                        
-  pkt_interface pkt_vif(clk_156m25,reset_156m25_n);                                                                           
+  pkt_interface pkt_vif(clk_156m25);                                                                           
    xge_mac DUV(.wb_int_o(wish_vif.wb_int_o),
                .wb_dat_o(wish_vif.wb_dat_o),
                .wb_ack_o(wish_vif.wb_ack_o),
@@ -51,7 +52,19 @@ always #5000 wb_clk_i = ~wb_clk_i; // We have considered the Wishbone clock freq
               .pkt_tx_eop(pkt_vif.pkt_tx_eop),
               .pkt_tx_data(pkt_vif.pkt_tx_data),
               .pkt_rx_ren(pkt_vif.pkt_rx_ren),
-              .clk_156m25(pkt_vif.clk_156m25));
+              .clk_156m25(pkt_vif.clk_156m25),
+
+              .clk_xgmii_rx(pkt_vif.clk_156m25),
+              .clk_xgmii_tx(pkt_vif.clk_156m25),
+              
+              .reset_xgmii_rx_n(pkt_vif.reset_156m25_n),
+              .reset_xgmii_tx_n(pkt_vif.reset_156m25_n),
+              
+              .xgmii_txc(pkt_vif.xgmii_txc),
+              .xgmii_txd(pkt_vif.xgmii_txd),
+              
+              .xgmii_rxc(pkt_vif.xgmii_txc),
+              .xgmii_rxd(pkt_vif.xgmii_txd));
  
   
 
@@ -68,6 +81,7 @@ always #5000 wb_clk_i = ~wb_clk_i; // We have considered the Wishbone clock freq
  initial begin
     $dumpfile("dump.vcd"); 
     $dumpvars;
+    #10000000ns $finish;
  end
  
 endmodule

@@ -8,9 +8,9 @@
 class xgemac_normal_test extends xgemac_base_test;
   `uvm_component_utils(xgemac_normal_test)
 
-  //Variable: vseq_normal_h
+  //Variable: xgemac_normal_vseq_h
   //Instantiation of xgemac_vseq_normal
-  xgemac_vseq_normal vseq_normal_h;
+  xgemac_normal_vseq xgemac_normal_vseq_h;
 
   //-------------------------------------------------------
   // Externally defined Tasks and Functions
@@ -55,16 +55,17 @@ task xgemac_normal_test::run_phase(uvm_phase phase);
 
   phase.raise_objection(this);
   
-  vseq_normal_h = xgemac_vseq_normal::type_id::create("vseq_normal_h");
+  xgemac_normal_vseq_h = xgemac_normal_vseq::type_id::create("xgemac_normal_vseq_h");
   `uvm_info(get_type_name(), $sformatf("Inside xgemac_normal_test"), UVM_NONE);
   
   // Assign sequencer handles from hierarchy to sequencer handles in virtual sequence
-  vseq_normal_h.in_seqr_h = xgemac_env_h.in_agent_h.in_seqr_h;
-  vseq_normal_h.wish_seqr_h = xgemac_env_h.wishbone_agent_h.wish_seqr_h;
-  vseq_normal_h.reset_seqr_h = xgemac_env_h.reset_agent_h.reset_seqr_h;
+  xgemac_normal_vseq_h.in_seqr_h = xgemac_env_h.in_agent_h.in_seqr_h;
+  xgemac_normal_vseq_h.wish_seqr_h = xgemac_env_h.wish_agent_h.wish_seqr_h;
+  xgemac_normal_vseq_h.reset_seqr_h = xgemac_env_h.reset_agent_h.reset_seqr_h;
   
-  vseq_normal_h.start(null);
-
+  xgemac_normal_vseq_h.start(null);
+//  #10ns;
+  
   `uvm_info(get_type_name(), $sformatf("Done xgemac_normal_test"), UVM_NONE);
   phase.drop_objection(this);
 endtask : run_phase

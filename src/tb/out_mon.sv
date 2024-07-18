@@ -10,7 +10,7 @@ class out_mon extends uvm_monitor;
   
   // Variable: pkt_vif
   // Declaring handle for pkt interface
-  virtual pkt_intf pkt_vif;
+  virtual pkt_interface pkt_vif;
    
   // Variable: in_seq_item_h
   // Declaring handle for in_seq_item class 
@@ -52,7 +52,7 @@ endfunction : new
 //--------------------------------------------------------------------------------------------
 function void out_mon::build_phase(uvm_phase phase);
   super.build_phase(phase);
-  if (!uvm_config_db#(virtual pkt_intf)::get(this, "", "pkt_vif", pkt_vif)) begin
+  if (!uvm_config_db#(virtual pkt_interface)::get(this, "", "pkt_vif", pkt_vif)) begin
     `uvm_fatal("NO PKT_VIF", {"virtual interface must be set for: ", get_full_name(), ".PKT_VIF"});
   end
 endfunction : build_phase

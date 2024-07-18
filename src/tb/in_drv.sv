@@ -30,47 +30,54 @@ endfunction
 task in_drv::run_phase(uvm_phase phase);
 
     forever begin
-      seq_item_port.get_next_item(in_seq_item_h);
-      @(posedge pkt_vif.pkt_in_dr_cb)
-      begin
-            if(!pkt_vif.pkt_tx_full)
+        seq_item_port.get_next_item(in_seq_item_h);
+        @(posedge pkt_vif.reset_156m25_n)
+        while(in_seq_item_h.frame.size()>1)
+        begin
+            @(posedge pkt_vif.pkt_in_dr_cb)
+            begin
+                if(!pkt_vif.pkt_tx_full)
                 begin
-                    if(in_seq_item_h.frame.size()>1)
-                        begin
-                            pkt_vif.pkt_tx_val<=1; //Enabling transaction
-                            pkt_vif.pkt_tx_eop<=0;
-                            if(pkt_count==0)
-                                pkt_vif.pkt_tx_sop<=1;
-                            else
-                                pkt_vif.pkt_tx_sop<=0;
-                            pkt_vif.pkt_tx_data <= in_seq_item_h.frame.pop_back();
-                            pkt_count<=pkt_count+1;
-                          end
-                    else if (in_seq_item_h.frame.size()==1)
-                        begin
-                            pkt_vif.pkt_tx_val<=1; //Enabling transaction
-                            pkt_vif.pkt_tx_eop<=1;
-                            pkt_vif.pkt_tx_sop<=0;
-                            pkt_vip.pkt_tx_data <= in_seq_item_h.frame.pop_back();
-                            pkt_vip.pkt_tx_mod <= in_seq_item_h.pkt_tx_mod;
-                        end
+                    pkt_vif.pkt_tx_val<=1; //Enabling transaction
+                    pkt_vif.pkt_tx_eop<=0;
+                    if(pkt_count==0)
+                        pkt_vif.pkt_tx_sop<=1;
                     else
-                        begin
-                            pkt_vif.pkt_tx_val<=0; //Disabling transaction
-                            pkt_vif.pkt_tx_eop<=0;
-                            pkt_vif.pkt_tx_sop<=0;
-                        end
-                 end
-              else
-                        begin
-                            pkt_vif.pkt_tx_val<=0; //Disabling transaction
-                            pkt_vif.pkt_tx_eop<=0;
-                            pkt_vif.pkt_tx_sop<=0;
-                        end
-         end
-      
-         seq_item_port.item_done();
+                        pkt_vif.pkt_tx_sop<=0;
+                    pkt_vif.pkt_tx_data <= in_seq_item_h.frame.pop_back();
+                    pkt_count<=pkt_count+1;
+                end
+                else
+                begin
+                    pkt_vif.pkt_tx_val<=0; //Disabling transaction
+                    pkt_vif.pkt_tx_eop<=0;
+                    pkt_vif.pkt_tx_sop<=0;
+                end
+            end
         end
+        while(in_seq_item_h.frame.size()==1)
+        begin
+            @(posedge pkt_vif.pkt_in_dr_cb)
+            begin
+                if(!pkt_vif.pkt_tx_full)
+                begin
+                    pkt_vif.pkt_tx_val<=1; //Enabling transaction
+                    pkt_vif.pkt_tx_eop<=1;
+                    pkt_vif.pkt_tx_sop<=0;
+                    pkt_vif.pkt_tx_data <= in_seq_item_h.frame.pop_back();
+                    pkt_vif.pkt_tx_mod <= in_seq_item_h.pkt_tx_mod;
+                end
+                else
+                begin
+                    pkt_vif.pkt_tx_val<=0; //Disabling transaction
+                    pkt_vif.pkt_tx_eop<=0;
+                    pkt_vif.pkt_tx_sop<=0;
+                end
+            end
+        end
+        
+        seq_item_port.item_done();
+    end
 
 endtask
 
