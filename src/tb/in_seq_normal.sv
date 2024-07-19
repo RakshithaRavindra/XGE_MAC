@@ -49,6 +49,12 @@ task in_seq_normal :: body();
                                     
                                 solve req.frame before req.pkt_tx_mod;
                               });
+    // assert(req.randomize() with {(req.frame.size()*8 inside {[64:1500]});}); 
+                              //req.pkt_tx_mod == 3;
+                              
+  // assert(req.randomize() with {req.frame.size() inside {[5:10]}; //To ensure total number of valid bytes is in between 60 to 1514
+                                
+  //                             });
     finish_item(req);
 
   endtask

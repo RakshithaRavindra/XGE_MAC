@@ -1,5 +1,5 @@
 QuestaSim vlog 10.6c Compiler 2017.07 Jul 25 2017
-Start time: 11:53:53 on Jul 18,2024
+Start time: 11:35:12 on Jul 19,2024
 vlog -sv -l mac_compile.log -f mac_compile.f 
 -- Compiling module fault_sm
 -- Compiling module generic_fifo
@@ -120,5 +120,5 @@ vlog -sv -l mac_compile.log -f mac_compile.f
 
 Top level modules:
 	xgemac_top
-End time: 11:53:54 on Jul 18,2024, Elapsed time: 0:00:01
+End time: 11:35:13 on Jul 19,2024, Elapsed time: 0:00:01
 Errors: 0, Warnings: 22

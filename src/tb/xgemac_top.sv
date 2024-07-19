@@ -81,7 +81,7 @@ always #5000 wb_clk_i = ~wb_clk_i; // We have considered the Wishbone clock freq
  initial begin
     $dumpfile("dump.vcd"); 
     $dumpvars;
-    #10000000ns $finish;
+    #1000ns $finish;
  end
  
 endmodule
